@@ -1,10 +1,8 @@
 # Northern Ireland Schools
 
-A searchable map of open primary and post-primary schools in Northern Ireland,
-including the directory's independent and preparatory school categories.
-Schools can be filtered by phase, Department of Education (DE) institution
-type, management type and local government district. Hover over a marker for
-the school name; select it for the available school link.
+A small, extensible site for exploring school locations and later adding
+school-level survey and other detail pages. The home page links to the Schools
+directory, the first location-based page in the project.
 
 ## Run locally
 
@@ -14,7 +12,8 @@ Serve the repository root over HTTP, for example:
 python -m http.server 8000
 ```
 
-Then open <http://localhost:8000>. The map uses Leaflet and OpenStreetMap
+Then open <http://localhost:8000>. The Schools page is at
+<http://localhost:8000/schools.html>. Its map uses Leaflet and OpenStreetMap
 tiles, so an internet connection is needed.
 
 ## Data and location accuracy
@@ -58,12 +57,13 @@ it does not retain the directory's contact-email field.
 ## Structure
 
 - `data/schools.json` holds school locations and official classifications.
-- `app.js` owns the map, filter state, result list and school details.
+- `schools.html` and `app.js` implement the Schools directory and map.
+- `index.html` and `home.js` provide the site overview and live directory counts.
 - `scripts/build-schools.ps1` refreshes the directory snapshot and postcode
   lookups.
-- Survey results should be stored separately and joined to the same stable DE
-  institution reference, rather than added as school-directory fields. This
-  keeps the school map reusable when additional survey layers are introduced.
+- Future school-detail datasets should remain separate from `schools.json` and
+  join to it using the stable DE institution reference in each school's `id`.
+  This keeps the school directory reusable across survey and other pages.
 
 The interaction follows the Language Atlas pattern of a page-specific map and
 filter controls backed by a prepared JSON dataset. It does not reuse the Atlas's
