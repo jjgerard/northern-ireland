@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#102a36">
+    <title>Northern Ireland Schools</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Northern Ireland Schools home">
+        <span class="brand-mark" aria-hidden="true">NI</span>
+        <span class="brand-name">Northern Ireland <b>Schools</b></span>
+      </a>
+      <div class="topbar-note"><span class="live-dot"></span> School directory</div>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar" aria-label="School map filters and results">
+        <div class="intro">
+          <p class="eyebrow">Find a school</p>
+          <h1>Schools across<br>Northern Ireland</h1>
+          <p class="intro-copy">Explore primary and post-primary schools by location and school type.</p>
+        </div>
+
+        <section class="filters" aria-label="Filter schools">
+          <label class="search-field" for="search">
+            <span class="sr-only">Search by school, town or postcode</span>
+            <span class="search-icon" aria-hidden="true"></span>
+            <input id="search" type="search" placeholder="School, town or postcode" autocomplete="off">
+            <kbd>/</kbd>
+          </label>
+
+          <div class="filter-grid">
+            <label class="filter-field" for="phase-filter">
+              <span>Phase</span>
+              <select id="phase-filter"><option value="">All phases</option></select>
+            </label>
+            <label class="filter-field" for="type-filter">
+              <span>School type</span>
+              <select id="type-filter"><option value="">All types</option></select>
+            </label>
+            <label class="filter-field" for="management-filter">
+              <span>Management</span>
+              <select id="management-filter"><option value="">All management types</option></select>
+            </label>
+            <label class="filter-field" for="area-filter">
+              <span>Local government district</span>
+              <select id="area-filter"><option value="">All districts</option></select>
+            </label>
+          </div>
+
+          <button class="reset-button" id="reset-filters" type="button">
+            <span aria-hidden="true">↺</span> Clear filters
+          </button>
+        </section>
+
+        <section class="results-section" aria-label="Matching schools">
+          <div class="results-heading">
+            <h2>Schools</h2>
+            <span class="result-count" id="result-count" aria-live="polite"></span>
+          </div>
+          <p class="results-hint">Select a school to locate it on the map.</p>
+          <ul class="school-list" id="school-list"></ul>
+          <p class="empty-state" id="empty-state" hidden>No schools match these filters.</p>
+        </section>
+
+        <footer class="sidebar-footer">
+          <span class="legend"><i class="legend-dot primary"></i> Primary <i class="legend-dot post-primary"></i> Post-primary <i class="legend-dot independent"></i> Independent / prep</span>
+          <p>Locations are approximate postcode centres. <a href="https://apps.education-ni.gov.uk/appinstitutes/default.aspx" target="_blank" rel="noreferrer">Data: Department of Education NI</a></p>
+        </footer>
+      </aside>
+
+      <section class="map-panel" aria-label="Map of Northern Ireland schools">
+        <div class="map-topline">
+          <div class="map-caption">
+            <span class="map-pin" aria-hidden="true"></span>
+            <span id="map-status">Loading school locations…</span>
+          </div>
+          <div class="map-legend" aria-label="Map legend">
+            <span><i class="legend-dot primary"></i> Primary</span>
+            <span><i class="legend-dot post-primary"></i> Post-primary</span>
+            <span><i class="legend-dot independent"></i> Independent / prep</span>
+          </div>
+        </div>
+        <div id="map" role="application" aria-label="Interactive school map"></div>
+        <div class="map-note">Postcode-centre positions are approximate</div>
+      </section>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
