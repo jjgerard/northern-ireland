@@ -16,6 +16,15 @@ Then open <http://localhost:8000>. The Schools page is at
 <http://localhost:8000/schools.html>. Its map uses Leaflet and OpenStreetMap
 tiles, so an internet connection is needed.
 
+## Publish with GitHub Pages
+
+The `Deploy GitHub Pages` workflow publishes the static site whenever changes
+are pushed to `main`, or when the workflow is run manually. Once GitHub Pages
+is enabled for the repository with **GitHub Actions** as its build and deploy
+source, the site is available at
+<https://jjgerard.github.io/northern-ireland/> and the school map at
+<https://jjgerard.github.io/northern-ireland/schools.html>.
+
 ## Data and location accuracy
 
 `data/schools.json` is a snapshot of open schools from the DE Schools+ Institution
