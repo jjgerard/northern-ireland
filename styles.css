@@ -269,6 +269,21 @@ h1 { margin-bottom: 12px; font: 800 25px/1.15 "Manrope", sans-serif; letter-spac
 .trend-table td.positive-change { color: #a34f3d; font-weight: 700; }
 .trend-table td.negative-change { color: #14766c; font-weight: 700; }
 .table-empty { padding: 10px 20px; }
+.trend-chart { margin: 20px 24px 0; padding-top: 19px; border-top: 1px solid var(--line); }
+.chart-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; }
+.chart-heading .eyebrow { margin-bottom: 4px; }
+.chart-heading h3 { margin: 0; color: #203a44; font: 700 15px "Manrope", sans-serif; letter-spacing: -.02em; }
+.chart-summary { margin: 0; color: #87979b; font-size: 10px; text-align: right; }
+.trend-chart-svg { display: block; width: 100%; height: auto; margin-top: 10px; overflow: visible; }
+.chart-grid line { stroke: #e8efed; stroke-width: 1; }
+.chart-grid .chart-x-gridline { stroke-dasharray: 2 5; }
+.chart-grid text { fill: #819196; font: 10px "DM Sans", sans-serif; }
+.chart-grid .chart-axis { stroke: #cbd9d6; stroke-dasharray: none; }
+.chart-line { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.chart-empty-message { fill: #819196; font: 12px "DM Sans", sans-serif; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 0; padding: 0; list-style: none; }
+.chart-legend-item { display: inline-flex; align-items: center; gap: 6px; color: #60727a; font-size: 10px; }
+.chart-legend-item svg { width: 20px; height: 10px; flex: none; }
 .source-notes { max-width: 1000px; margin: 20px 2px 0; color: #74878c; font-size: 10px; line-height: 1.6; }
 .source-notes h2 { margin: 0 0 7px; color: #526870; font: 700 12px "Manrope", sans-serif; }
 .source-notes ul { margin: 0 0 8px; padding-left: 18px; }
@@ -348,6 +363,12 @@ h1 { margin-bottom: 12px; font: 800 25px/1.15 "Manrope", sans-serif; letter-spac
   .table-card { padding-top: 17px; }
   .table-heading { padding: 0 17px; }
   .table-heading h2 { font-size: 14px; }
+  .trend-chart { margin-right: 17px; margin-left: 17px; padding-top: 15px; }
+  .chart-heading h3 { font-size: 13px; }
+  .chart-summary { max-width: 48%; font-size: 9px; }
+  .chart-grid text { font-size: 9px; }
+  .chart-legend { gap: 7px 12px; }
+  .chart-legend-item { font-size: 9px; }
   .download-button { min-height: 33px; padding: 0 9px; font-size: 10px; }
   .data-status { margin-right: 17px; margin-left: 17px; }
   .trend-table th, .trend-table td { padding: 9px 10px; }

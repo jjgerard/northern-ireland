@@ -104,6 +104,19 @@
           </table>
         </div>
         <p class="empty-state table-empty" id="table-empty" hidden>Select at least one series to build the table.</p>
+        <section class="trend-chart" id="trend-chart" aria-labelledby="chart-heading" hidden>
+          <div class="chart-heading">
+            <div>
+              <p class="eyebrow">Visual comparison</p>
+              <h3 id="chart-heading">Trend lines</h3>
+            </div>
+            <p class="chart-summary" id="chart-summary"></p>
+          </div>
+          <svg class="trend-chart-svg" id="trend-chart-svg" viewBox="0 0 960 390" role="img" aria-labelledby="chart-heading chart-description">
+            <desc id="chart-description">A line chart of the selected series across academic years.</desc>
+          </svg>
+          <ul class="chart-legend" id="chart-legend" aria-label="Chart series"></ul>
+        </section>
       </section>
 
       <aside class="source-notes" aria-labelledby="notes-heading">
