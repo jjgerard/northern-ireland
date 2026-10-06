@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#102a36">
+    <title>School trends | Northern Ireland Schools</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="enrolments-page">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Northern Ireland home">
+        <span class="brand-mark" aria-hidden="true">NI</span>
+        <span class="brand-name">Northern Ireland <b>Schools</b></span>
+      </a>
+      <nav class="top-nav" aria-label="Main navigation">
+        <a href="./">Overview</a>
+        <a href="./schools.html">Schools</a>
+        <a href="./enrolments.html" aria-current="page">Trends</a>
+      </nav>
+    </header>
+
+    <main class="enrolments-main">
+      <header class="enrolments-heading">
+        <p class="eyebrow">Department of Education · Schools and pupils</p>
+        <h1>Explore school trends over time.</h1>
+        <p>Choose a slice of the Department’s published data, then compare categories or schools across the available years. Census data includes school type and pupil characteristics; attendance is available by school.</p>
+      </header>
+
+      <section class="builder-card" aria-labelledby="builder-heading">
+        <div class="builder-title">
+          <div>
+            <p class="eyebrow">Table builder</p>
+            <h2 id="builder-heading">Choose a data slice</h2>
+          </div>
+          <div class="source-links" id="source-links">
+            <a class="source-link" href="https://www.education-ni.gov.uk/publications/school-enrolments-northern-ireland-summary-data" target="_blank" rel="noopener noreferrer">Department data and notes <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+
+        <div class="builder-controls">
+          <label class="filter-field" for="dataset-select">
+            <span>Slice by</span>
+            <select id="dataset-select" disabled><option>Loading datasets…</option></select>
+          </label>
+          <label class="filter-field" id="metric-field" for="metric-select" hidden>
+            <span>Attendance measure</span>
+            <select id="metric-select" disabled></select>
+          </label>
+          <label class="filter-field" id="group-field" for="group-filter" hidden>
+            <span>School phase / category</span>
+            <select id="group-filter" disabled><option value="">Choose a school phase</option></select>
+          </label>
+          <label class="filter-field" for="year-from">
+            <span>From academic year</span>
+            <select id="year-from" disabled><option>Loading years…</option></select>
+          </label>
+          <label class="filter-field" for="year-to">
+            <span>To academic year</span>
+            <select id="year-to" disabled><option>Loading years…</option></select>
+          </label>
+          <label class="filter-field category-search" for="series-search">
+            <span id="search-label">Find a series</span>
+            <input id="series-search" type="search" placeholder="Search series" autocomplete="off" disabled>
+          </label>
+          <label class="filter-field" for="sort-by">
+            <span>Sort rows</span>
+            <select id="sort-by" disabled>
+              <option value="category">Series name</option>
+              <option value="change">Greatest increase</option>
+              <option value="latest">Latest value</option>
+            </select>
+          </label>
+        </div>
+
+        <fieldset class="category-picker" id="category-picker" disabled hidden>
+          <legend>Include series</legend>
+          <div class="category-options" id="category-options"></div>
+          <div class="category-actions">
+            <button type="button" id="select-all">Select all</button>
+            <button type="button" id="select-none">Clear selection</button>
+          </div>
+        </fieldset>
+      </section>
+
+      <section class="table-card" aria-labelledby="table-heading">
+        <div class="table-heading">
+          <div>
+            <p class="eyebrow">Your table</p>
+            <h2 id="table-heading">Trend table</h2>
+            <p class="table-summary" id="table-summary">Loading the Department’s data…</p>
+          </div>
+          <button class="download-button" id="download-csv" type="button" disabled>Download CSV <span aria-hidden="true">↓</span></button>
+        </div>
+        <p class="data-status" id="data-status" role="status" aria-live="polite">Loading school trends…</p>
+        <div class="table-scroll" id="table-scroll" hidden>
+          <table class="trend-table" id="trend-table">
+            <caption class="sr-only">Department of Education school trend series for the selected slice and academic years</caption>
+            <thead id="trend-head"></thead>
+            <tbody id="trend-body"></tbody>
+          </table>
+        </div>
+        <p class="empty-state table-empty" id="table-empty" hidden>Select at least one series to build the table.</p>
+      </section>
+
+      <aside class="source-notes" aria-labelledby="notes-heading">
+        <h2 id="notes-heading">About these figures</h2>
+        <ul id="source-notes"></ul>
+        <p>Source: Department of Education Northern Ireland. <span id="source-description"></span> <span id="snapshot-date"></span></p>
+      </aside>
+    </main>
+
+    <footer class="home-footer">
+      <span>Northern Ireland Schools</span>
+      <span>School and pupil information from published Department of Education data.</span>
+    </footer>
+    <script type="module" src="enrolments.js"></script>
+  </body>
+</html>
