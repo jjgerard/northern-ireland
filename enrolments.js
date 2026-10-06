@@ -24,9 +24,18 @@ const elements = {
   tableHead: document.querySelector("#trend-head"),
   tableBody: document.querySelector("#trend-body"),
   empty: document.querySelector("#table-empty"),
+  chart: document.querySelector("#trend-chart"),
+  chartSvg: document.querySelector("#trend-chart-svg"),
+  chartSummary: document.querySelector("#chart-summary"),
+  chartLegend: document.querySelector("#chart-legend"),
   download: document.querySelector("#download-csv"),
 };
 
+const chartColors = [
+  "#14766c", "#bf6048", "#4775a8", "#b18421", "#76579b",
+  "#358a9a", "#b34b78", "#6d8835", "#8b684f", "#53616d",
+];
+const svgNamespace = "http://www.w3.org/2000/svg";
 let datasets = [];
 let activeDataset = null;
 let currentTable = [];
@@ -82,11 +91,13 @@ function renderGroupOptions() {
   }
   elements.groupLabel.textContent = activeDataset.id === "attendance" ? "School phase" : "School category";
   elements.group.replaceChildren(
-    makeOption(activeDataset.id === "attendance" ? "Choose a school phase" : "All school categories", ""),
+    makeOption(activeDataset.id === "attendance" ? "All school phases" : "All school categories", ""),
     ...groups.map((group) => makeOption(group, group))
   );
   elements.group.disabled = false;
-  elements.group.value = "";
+  elements.group.value = activeDataset.id === "attendance" && groups.includes("Primary")
+    ? "Primary"
+    : "";
   elements.groupField.hidden = false;
 }
 
@@ -179,8 +190,6 @@ function matchingRows() {
   const group = elements.group.value;
   const useGroupFilter = activeDataset.rows.length > 80;
 
-  if (activeDataset.id === "attendance" && !group && !query) return [];
-
   return activeDataset.rows
     .filter((row) =>
       (useGroupFilter || selected.has(row.id)) &&
@@ -260,6 +269,130 @@ function buildTableRow(rowData) {
   return row;
 }
 
+function svgElement(name, attributes = {}, text) {
+  const element = document.createElementNS(svgNamespace, name);
+  for (const [key, value] of Object.entries(attributes)) element.setAttribute(key, value);
+  if (text !== undefined) element.textContent = text;
+  return element;
+}
+
+function niceStep(range, targetTicks) {
+  const roughStep = range / targetTicks;
+  const magnitude = 10 ** Math.floor(Math.log10(roughStep));
+  const residual = roughStep / magnitude;
+  const niceResidual = residual <= 1 ? 1 : residual <= 2 ? 2 : residual <= 5 ? 5 : 10;
+  return niceResidual * magnitude;
+}
+
+function renderChart() {
+  const rows = currentTable;
+  elements.chart.hidden = rows.length === 0;
+  elements.chartSvg.replaceChildren(
+    svgElement("desc", { id: "chart-description" },
+      `A line chart showing ${rows.length} selected series across ${visibleYears.length} academic years.`)
+  );
+  elements.chartLegend.replaceChildren();
+  if (!rows.length || !visibleYears.length) return;
+
+  const width = 960;
+  const height = 390;
+  const margin = { top: 22, right: 20, bottom: 55, left: 78 };
+  const plotWidth = width - margin.left - margin.right;
+  const plotHeight = height - margin.top - margin.bottom;
+  const values = rows.flatMap((row) => valuesForRow(row).filter(Number.isFinite));
+  if (!values.length) {
+    elements.chartSummary.textContent = "No numeric values are reported for this selection.";
+    elements.chartSvg.append(svgElement("text", {
+      x: width / 2, y: height / 2, class: "chart-empty-message", "text-anchor": "middle",
+    }, "No numeric values to plot"));
+    return;
+  }
+
+  const minimum = Math.min(0, ...values);
+  const maximum = Math.max(...values);
+  const step = niceStep(maximum - minimum || 1, 5);
+  const yMinimum = Math.floor(minimum / step) * step;
+  const yMaximum = Math.ceil(maximum / step) * step || step;
+  const x = (index) => margin.left + (visibleYears.length < 2
+    ? plotWidth / 2
+    : (index / (visibleYears.length - 1)) * plotWidth);
+  const y = (value) => margin.top + ((yMaximum - value) / (yMaximum - yMinimum)) * plotHeight;
+
+  const grid = svgElement("g", { class: "chart-grid", "aria-hidden": "true" });
+  const tickCount = Math.round((yMaximum - yMinimum) / step);
+  for (let index = 0; index <= tickCount; index += 1) {
+    const value = yMinimum + step * index;
+    const tickY = y(value);
+    grid.append(
+      svgElement("line", { x1: margin.left, x2: width - margin.right, y1: tickY, y2: tickY }),
+      svgElement("text", { x: margin.left - 12, y: tickY + 4, "text-anchor": "end" },
+        `${numberFormat.format(value)}${activeDataset.format === "percent" ? "%" : ""}`)
+    );
+  }
+  const xTickIndices = new Set([0, visibleYears.length - 1]);
+  const maxXTicks = 7;
+  if (visibleYears.length > 2) {
+    for (let index = 1; index < maxXTicks - 1; index += 1) {
+      xTickIndices.add(Math.round((index / (maxXTicks - 1)) * (visibleYears.length - 1)));
+    }
+  }
+  for (const index of [...xTickIndices].sort((a, b) => a - b)) {
+    const tickX = x(index);
+    grid.append(
+      svgElement("line", { x1: tickX, x2: tickX, y1: margin.top, y2: height - margin.bottom, class: "chart-x-gridline" }),
+      svgElement("text", { x: tickX, y: height - margin.bottom + 22, "text-anchor": "middle" }, visibleYears[index].label)
+    );
+  }
+  grid.append(
+    svgElement("line", { x1: margin.left, x2: margin.left, y1: margin.top, y2: height - margin.bottom, class: "chart-axis" }),
+    svgElement("line", { x1: margin.left, x2: width - margin.right, y1: height - margin.bottom, y2: height - margin.bottom, class: "chart-axis" })
+  );
+  elements.chartSvg.append(grid);
+
+  const lineGroup = svgElement("g", { class: "chart-lines" });
+  rows.forEach((row, rowIndex) => {
+    const rowValues = valuesForRow(row);
+    let path = "";
+    let segmentOpen = false;
+    rowValues.forEach((value, yearIndex) => {
+      if (!Number.isFinite(value)) {
+        segmentOpen = false;
+        return;
+      }
+      path += `${segmentOpen ? "L" : "M"}${x(yearIndex).toFixed(2)},${y(value).toFixed(2)} `;
+      segmentOpen = true;
+    });
+    if (path) {
+      const color = chartColors[rowIndex % chartColors.length];
+      const line = svgElement("path", {
+        d: path.trim(),
+        class: "chart-line",
+        stroke: color,
+        "stroke-opacity": rows.length > 12 ? "0.55" : "1",
+      });
+      line.append(svgElement("title", {}, row.label));
+      lineGroup.append(line);
+
+      if (rows.length <= 12) {
+        const item = document.createElement("li");
+        item.className = "chart-legend-item";
+        item.append(
+          svgElement("svg", { viewBox: "0 0 20 10", "aria-hidden": "true" }),
+          document.createTextNode(row.label)
+        );
+        item.firstElementChild.append(svgElement("line", {
+          x1: 1, x2: 19, y1: 5, y2: 5, stroke: color, "stroke-width": 2.5,
+        }));
+        elements.chartLegend.append(item);
+      }
+    }
+  });
+  elements.chartSvg.append(lineGroup);
+  elements.chartSummary.textContent = rows.length > 12
+    ? `${rows.length.toLocaleString()} series shown; legend hidden for readability.`
+    : `${rows.length.toLocaleString()} series · ${activeDataset.unit}`;
+}
+
 function renderTable() {
   visibleYears = activeDataset.years.slice(
     activeDataset.years.findIndex((year) => year.label === elements.from.value),
@@ -269,6 +402,7 @@ function renderTable() {
     elements.status.textContent = "Choose a valid year range to build the table.";
     elements.tableScroll.hidden = true;
     elements.empty.hidden = true;
+    elements.chart.hidden = true;
     elements.download.disabled = true;
     return;
   }
@@ -279,19 +413,16 @@ function renderTable() {
   for (const row of currentTable) fragment.append(buildTableRow(row));
   elements.tableBody.replaceChildren(fragment);
 
-  const requiresAttendanceFilter = activeDataset.id === "attendance" &&
-    !elements.group.value && !elements.search.value.trim();
   elements.tableScroll.hidden = currentTable.length === 0;
   elements.empty.hidden = currentTable.length !== 0;
   elements.download.disabled = currentTable.length === 0;
-  elements.empty.textContent = requiresAttendanceFilter
-    ? "Choose a school phase or search for a school to view attendance results."
-    : "Select at least one series to build the table.";
+  elements.empty.textContent = "Select at least one series to build the table.";
   elements.status.textContent = currentTable.length
     ? `${currentTable.length.toLocaleString()} ${currentTable.length === 1 ? "row" : "rows"} · ${visibleYears.length} academic ${visibleYears.length === 1 ? "year" : "years"}`
     : "";
   elements.tableSummary.textContent = `${activeDataset.title} · ${visibleYears[0].label}–${visibleYears.at(-1).label} · ${activeDataset.unit}`;
   elements.tableTitle.textContent = activeDataset.title;
+  renderChart();
 }
 
 function updateYearBounds(changed) {

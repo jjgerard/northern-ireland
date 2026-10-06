@@ -132,6 +132,41 @@ def row_id(label: str) -> str:
     return slug or "series"
 
 
+def demographic_group(key: str, label: str, active_group: str) -> str | None:
+    if key not in {"free-meals", "newcomers"}:
+        return active_group or None
+
+    normalized = re.sub(r"[^a-z0-9]+", " ", label.casefold()).strip()
+    if normalized.startswith("voluntary and private pre school"):
+        return "Pre-school centres"
+    if normalized.startswith("nursery schools") or normalized == "total nursery schools":
+        return "Nursery Schools"
+    if normalized.startswith("nursery class pupils") or normalized == "total nursery class pupils":
+        return "Nursery class pupils"
+    if normalized.startswith("pre school specialist provision"):
+        return "Pre-school specialist provision"
+    if (
+        normalized.startswith(("primary ", "primary:", "grammar preparatory"))
+        or normalized.startswith("grammar school prep")
+        or normalized.startswith("total reception pupils")
+        or normalized.startswith("total year 1")
+        or normalized.startswith("total primary pupils")
+    ):
+        return "Primary Schools"
+    if (
+        normalized.startswith(("secondary ", "grammar schools"))
+        or normalized.startswith("total post primary pupils")
+    ):
+        return "Post Primary Schools"
+    if normalized.startswith("special schools"):
+        return "Special Schools"
+    if normalized.startswith("eotas"):
+        return "EOTAS Centres"
+    if normalized.startswith("all schools"):
+        return "Overall totals"
+    return active_group or None
+
+
 def source_links() -> tuple[dict[str, str], str]:
     links = anchors_at(_enrolment_module.SOURCE_PAGE)
     sources: dict[str, str] = {}
@@ -239,7 +274,7 @@ def build_wide_demographic_dataset(
         series.append({
             "id": identifier,
             "label": display_label,
-            "group": active_group or None,
+            "group": demographic_group(key, label, active_group),
             "values": values,
         })
 
