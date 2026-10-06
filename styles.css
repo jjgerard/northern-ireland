@@ -219,6 +219,63 @@ h1 { margin-bottom: 12px; font: 800 25px/1.15 "Manrope", sans-serif; letter-spac
 .future-note { margin: 14px 0 0; color: #94a1a3; font-size: 10px; }
 .home-footer { display: flex; justify-content: space-between; gap: 16px; padding: 19px max(24px, calc((100% - 1020px) / 2)); border-top: 1px solid #e1e9e7; color: #8b999c; font-size: 9px; }
 
+.enrolments-page { min-height: 100vh; background: #f5f8f7; }
+.enrolments-main { width: min(1320px, calc(100% - 56px)); margin: 0 auto; padding: 49px 0 55px; }
+.enrolments-heading { max-width: 760px; margin: 0 0 28px; }
+.enrolments-heading h1 { margin-bottom: 11px; font-size: clamp(29px, 4vw, 40px); }
+.enrolments-heading > p:last-child { margin-bottom: 0; color: #687d84; font-size: 14px; line-height: 1.6; }
+.builder-card, .table-card { border: 1px solid #e0e9e7; border-radius: 10px; background: #fff; box-shadow: 0 3px 12px rgb(16 42 54 / 3%); }
+.builder-card { padding: 24px; }
+.builder-title, .table-heading { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.source-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 14px; }
+.builder-title .eyebrow, .table-heading .eyebrow { margin-bottom: 5px; }
+.builder-title h2, .table-heading h2 { margin: 0; color: #203a44; font: 700 18px "Manrope", sans-serif; letter-spacing: -.03em; }
+.source-link { flex: none; color: var(--teal); font-size: 11px; font-weight: 700; text-decoration: none; }
+.source-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.builder-controls { display: grid; grid-template-columns: repeat(4, minmax(140px, 1fr)); gap: 14px; margin-top: 21px; }
+.builder-controls .filter-field { gap: 7px; }
+.builder-controls .filter-field span { font-size: 11px; }
+.builder-controls .filter-field[hidden] { display: none; }
+.builder-controls select, .builder-controls input { width: 100%; height: 39px; padding: 0 10px; border: 1px solid #dce6e4; border-radius: 6px; outline: 0; background: #fff; color: #304750; font-size: 12px; }
+.builder-controls select:focus-visible, .builder-controls input:focus-visible { border-color: var(--teal); box-shadow: 0 0 0 3px rgb(11 124 120 / 10%); }
+.category-picker { min-width: 0; margin: 20px 0 0; padding: 14px 0 0; border: 0; border-top: 1px solid var(--line); }
+.category-picker legend { padding: 0 8px 0 0; color: #60727a; font-size: 11px; font-weight: 600; }
+.category-options { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; }
+.category-option { display: inline-flex; align-items: center; gap: 7px; min-height: 34px; padding: 0 10px; border: 1px solid #e1e9e7; border-radius: 6px; color: #456069; cursor: pointer; font-size: 11px; }
+.category-option:has(input:checked) { border-color: #b6d9d1; background: #f0f8f5; color: #176f69; }
+.category-option input { width: 14px; height: 14px; margin: 0; accent-color: var(--teal); }
+.category-actions { display: flex; gap: 15px; margin-top: 12px; }
+.category-actions button { padding: 0; border: 0; background: transparent; color: var(--teal); cursor: pointer; font-size: 10px; font-weight: 600; }
+.category-actions button:hover { text-decoration: underline; text-underline-offset: 3px; }
+.table-card { margin-top: 18px; padding: 22px 0 18px; }
+.table-heading { padding: 0 24px; }
+.table-heading h2 { font-size: 16px; }
+.table-summary { margin: 5px 0 0; color: #87979b; font-size: 10px; }
+.download-button { display: inline-flex; flex: none; align-items: center; gap: 8px; min-height: 37px; padding: 0 12px; border: 1px solid #cfe2dd; border-radius: 6px; background: #f4faf8; color: #176f69; cursor: pointer; font-size: 11px; font-weight: 700; }
+.download-button:hover:not(:disabled) { border-color: #9fcabf; background: #eaf6f2; }
+.download-button:disabled { cursor: not-allowed; opacity: .55; }
+.download-button span { font-size: 15px; line-height: 1; }
+.data-status { margin: 14px 24px 0; color: #72858b; font-size: 11px; }
+.data-status:empty { display: none; }
+.table-scroll { overflow: auto; max-height: 68vh; margin-top: 14px; border-top: 1px solid var(--line); scrollbar-color: #c8d7d5 transparent; scrollbar-width: thin; }
+.trend-table { width: max-content; min-width: 100%; border-collapse: separate; border-spacing: 0; color: #304750; font-size: 11px; font-variant-numeric: tabular-nums; }
+.trend-table th, .trend-table td { padding: 10px 12px; border-bottom: 1px solid #edf1f0; text-align: right; white-space: nowrap; }
+.trend-table thead th { position: sticky; top: 0; z-index: 2; background: #f4f8f7; color: #60727a; font-size: 10px; font-weight: 700; }
+.trend-table th:first-child { position: sticky; left: 0; z-index: 1; min-width: 155px; background: #fff; text-align: left; }
+.trend-table thead th:first-child { z-index: 3; background: #f4f8f7; }
+.trend-table tbody th { color: #304750; font-size: 11px; font-weight: 600; }
+.trend-table tbody tr:hover td, .trend-table tbody tr:hover th { background: #f7fbfa; }
+.trend-table td.not-reported { color: #9aa8aa; }
+.trend-table td.positive-change { color: #a34f3d; font-weight: 700; }
+.trend-table td.negative-change { color: #14766c; font-weight: 700; }
+.table-empty { padding: 10px 20px; }
+.source-notes { max-width: 1000px; margin: 20px 2px 0; color: #74878c; font-size: 10px; line-height: 1.6; }
+.source-notes h2 { margin: 0 0 7px; color: #526870; font: 700 12px "Manrope", sans-serif; }
+.source-notes ul { margin: 0 0 8px; padding-left: 18px; }
+.source-notes li + li { margin-top: 3px; }
+.source-notes p { margin: 0; }
+.source-notes a { color: #577b7c; text-decoration: underline; text-underline-offset: 2px; }
+
 @media (max-width: 900px) {
   .workspace { grid-template-columns: 330px minmax(0, 1fr); }
   .intro { padding-right: 22px; padding-left: 22px; }
@@ -228,6 +285,8 @@ h1 { margin-bottom: 12px; font: 800 25px/1.15 "Manrope", sans-serif; letter-spac
   .results-hint { margin-right: 20px; margin-left: 20px; }
   .school-list { max-height: calc(100vh - 610px); }
   .sidebar-footer { padding-right: 18px; padding-left: 18px; }
+  .enrolments-main { width: calc(100% - 40px); }
+  .builder-controls { grid-template-columns: repeat(2, minmax(140px, 1fr)); }
 }
 
 @media (max-width: 680px) {
@@ -276,4 +335,20 @@ h1 { margin-bottom: 12px; font: 800 25px/1.15 "Manrope", sans-serif; letter-spac
   .card-copy > span:last-child { font-size: 10px; }
   .card-arrow { right: 14px; }
   .home-footer { flex-direction: column; padding: 16px 18px; }
+  .enrolments-main { width: calc(100% - 32px); padding: 34px 0 38px; }
+  .enrolments-heading { margin-bottom: 20px; }
+  .enrolments-heading h1 { font-size: 29px; }
+  .enrolments-heading > p:last-child { font-size: 12px; }
+  .builder-card { padding: 17px; }
+  .builder-title, .table-heading { align-items: flex-start; }
+  .builder-title { flex-direction: column; gap: 11px; }
+    .source-links { justify-content: flex-start; gap: 11px; }
+  .builder-controls { grid-template-columns: 1fr 1fr; gap: 11px; margin-top: 16px; }
+  .builder-controls .category-search { grid-column: 1 / -1; }
+  .table-card { padding-top: 17px; }
+  .table-heading { padding: 0 17px; }
+  .table-heading h2 { font-size: 14px; }
+  .download-button { min-height: 33px; padding: 0 9px; font-size: 10px; }
+  .data-status { margin-right: 17px; margin-left: 17px; }
+  .trend-table th, .trend-table td { padding: 9px 10px; }
 }
