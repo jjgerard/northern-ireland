@@ -58,14 +58,21 @@ different. Also decide early whether it will be a *public* repo (see 2.5).
 
 ### 2.1 Short answer
 
+**Decision: labs are harvested; researchers add themselves.** The site
+auto-populates labs, networks and lab links only. It never harvests named
+researchers. Researchers create their own entries from a verified
+institutional email, and can edit or delete them at any time.
+
 - **Harvesting labs and institutions is feasible and low-risk.** These are
   organisations, and almost all of the needed information is published in
   open, structured, reusable form.
-- **Harvesting named researchers is feasible but is personal-data processing
-  under UK GDPR (and EU GDPR for Ireland), even though every item is public.**
-  It can be done acceptably, but only with a defined purpose, a lawful basis,
-  minimal fields, notice, an opt-out/correction route, and a human check on
-  lab membership. "It's all public" does not on its own make it permitted.
+- **Named researchers are personal data under UK GDPR (and EU GDPR for
+  Ireland), even though much of it is public.** Harvesting them would need a
+  lawful basis, notice to every person found, accuracy checks and an opt-out.
+  Self-registration avoids most of that: the data comes from the person, the
+  privacy notice is given at signup, and the person controls what is shown.
+  "It's all public" does not on its own make harvesting permitted, so we do
+  not rely on it.
 - **The circulated list is not a safe benchmark either way.** See 2.2.
 - **Do not scrape Google or Google Scholar.** Use open scholarly APIs instead
   (2.3). This is the main practical recommendation: it is both more
@@ -128,11 +135,19 @@ name, institution (ROR ID), department, nation/region, approximate location,
 lab website URL, topic tags, type (lab / network / centre), source URL, date
 checked.
 
-**Researcher (publish only the minimum, with provenance)**
-display name, role category if the lab page states it (PI / postdoc /
-student / staff), subject areas (from OpenAlex topics or the person's own
-profile), link to their institutional profile page or ORCID, source URL, date
-checked, status (`harvested` / `confirmed` / `self-submitted`).
+**Lab harvesting rule.** Harvest the lab name, URL and institution only. Do
+not pull staff names, contact details or member lists from lab pages. If a lab
+is named after a person ("Dr X Lab"), flag it for review, since the name
+itself is then personal data.
+
+**Researcher (self-entered only; the minimum set)**
+display name, role category (PI / postdoc / student / staff), subject areas
+(chosen from the site's topic list, or imported from the person's own ORCID
+at their request), link to their own institutional profile page or ORCID,
+lab memberships (claimed, then confirmed by a lab lead or moderator),
+`createdAt`, `lastConfirmed`, status (`pending-email` / `active` /
+`membership-pending`). OpenAlex/ORCID may be used to *prefill the form for
+the person who is signing up*, never to create entries for others.
 
 **Never collect or publish**
 email addresses and phone numbers (link out to the profile instead); photos;
@@ -145,30 +160,35 @@ Be cautious about listing PhD students and early-career researchers by name
 unless they appear on a lab page or opt in. They have less control over their
 public footprint and the highest turnover (accuracy problem).
 
-### 2.5 UK GDPR checklist for the person-level layer
+### 2.5 UK GDPR checklist for the self-registered researcher layer
 
 1. **Controller and purpose.** Decide who the controller is (likely the
    university, not an individual) and write one clear purpose, e.g. "to help
    child development researchers find collaborators and events across the UK
    and Ireland." Anything beyond that purpose (e.g. ranking people) is out.
-2. **Lawful basis.** Legitimate interests is the likely basis, which needs a
-   documented legitimate interests assessment (purpose, necessity, balancing).
-   Consent is workable for *self-submitted* entries only. Check current ICO
-   guidance, as the Data (Use and Access) Act 2025 amended parts of the
-   regime.
-3. **Transparency (Art. 14).** People whose data is collected from third
-   parties must be told. The "disproportionate effort" exception is narrow and
-   hard to rely on for a field of a few thousand identifiable people. Plan to
-   notify each lab lead (and ideally each listed person) before launch, with a
-   privacy notice page on the site.
-4. **Right to object / erasure / rectification.** Provide a simple "remove or
-   correct me" route with a fixed turnaround, and honour objections.
-5. **Accuracy.** Automated "person works in lab X" inference from
-   co-authorship is error-prone and people move. Store provenance and a
-   `lastVerified` date, run a human review queue before publishing, and
-   re-verify on a schedule (e.g. annually) or expire entries.
-6. **Minimisation and retention.** Collect only the 2.4 fields; set a
-   retention rule (e.g. remove unverified person entries after 12-18 months).
+2. **Lawful basis.** Self-registration is either consent or legitimate
+   interests (the network's interest in a directory, with a short written
+   legitimate interests assessment: purpose, necessity, balancing). Pick one
+   and record it. With consent, withdrawal must be as easy as signing up.
+   Check current ICO guidance, as the Data (Use and Access) Act 2025 amended
+   parts of the regime.
+3. **Transparency (Art. 13).** Because the data comes from the person, the
+   privacy notice is shown at signup (purpose, fields, who sees them, how to
+   edit/delete, controller contact). The harder Art. 14 duty to notify people
+   whose data was found elsewhere largely does not arise, because no one is
+   added without their own action.
+4. **Right to object / erasure / rectification.** Researchers edit or delete
+   their own entry directly after logging in. Also provide an email route for
+   people who cannot log in (changed institution or name, lost access), handled
+   case by case, with a fixed turnaround. Do not make an account the price of
+   objecting. Someone who never signed up but is named elsewhere (e.g. in a
+   lab's own free-text) can use the same route.
+5. **Accuracy.** People keep their own entries current. Ask for
+   re-confirmation annually and hide or delete entries that lapse. Lab
+   membership is a claim until a lab lead or moderator confirms it.
+6. **Minimisation and retention.** Collect only the 2.4 fields; delete lapsed
+   entries after 12-18 months. Keep a log that a deletion happened without
+   keeping the deleted personal data.
 7. **Ireland.** If Irish researchers are listed, align with EU GDPR and the
    Irish DPC's approach. Treat it as "GDPR-compliant for both" and ask the DPO
    whether EU representative or other obligations arise.
@@ -180,25 +200,28 @@ public footprint and the highest turnover (accuracy problem).
    Check terms, location of processing and data-processing agreements, or
    keep extraction local/deterministic.
 
-### 2.6 Process before any public launch
+### 2.6 Process before launch
 
-1. DPO consultation; likely a short **DPIA** (systematic collection of
-   identifiable individuals, combining sources, publication online).
-2. Written **Legitimate Interests Assessment** and privacy notice.
-3. Pilot with a small number of labs, with lab-lead sign-off.
-4. Pre-launch notification to listed labs/people with a 2-4 week window to
-   opt out or correct.
-5. A named contact for takedown requests and a documented SLA.
+Building the site needs none of this. It applies before real researcher
+entries are collected.
+
+1. Tell the DPO what is being built. With self-registration only, the DPIA
+   should be short.
+2. Settle the controller, the lawful basis, and a short privacy notice.
+3. Email the harvested labs: "your lab is listed, here is how to edit or
+   remove it." This is courtesy and accuracy for organisational data, not a
+   strict legal requirement.
+4. Pilot with a few labs before opening registration to the network.
+5. A named contact for removal requests and a documented turnaround.
 
 ### 2.7 Specific risks to design around
 
-- **Git history is permanent.** A public GitHub repo with person data in its
-  history cannot truly honour erasure; deleting a row leaves it in old
-  commits, forks and caches. Options: keep person-level data out of the public
-  repo (private repo or a small database/API, with the site fetching only
-  public-approved rows); or publish only lab-level data in the repo and
-  person-level data via a separately controlled store; or rewrite history on
-  removal (fragile). Decide this *before* the first commit of any person data.
+- **Keep person data out of git.** Harvested lab data can live in committed
+  JSON. Researcher entries should not: they live in a database behind the
+  login (see 4.2), so deleting an entry actually deletes it. A public repo's
+  history cannot honour erasure. If the repo is private and has a short
+  collaborator list, the problem is smaller but still exists, so the rule
+  stays: no researcher data in commits.
 - **Harassment / targeting.** Some child-development topics attract hostile
   attention (vaccines, gender, neurodiversity, education policy, adoption and
   care). A list that maps named people to named labs and locations, with
@@ -225,20 +248,33 @@ public footprint and the highest turnover (accuracy problem).
 
 ### 2.8 Recommended approach (decision)
 
-Use a **tiered, claim-and-verify model**:
+**Harvest labs, let researchers add themselves.**
 
-- **Tier 1: labs and networks.** Seed automatically (ROR + OpenAlex + the
-  supplied list + public lab pages). Publish after a light human check.
-- **Tier 2: researchers.** Automatically *propose* people for each lab from
-  OpenAlex/ORCID/lab pages into a review queue. Publish only after a lab
-  lead confirms or the person claims their entry, or after the notification
-  and opt-out window in 2.6 has passed. Publish name + topics + link-out only.
+- **Tier 1: labs and networks (automatic).** Seed from the supplied list, ROR,
+  OpenAlex institution data and public lab pages. Store name, URL,
+  institution, location and topics only, with a source URL and date. Publish
+  after a light human check.
+- **Tier 2: researchers (self-registered).** The site provides the
+  functionality (signup, profile, lab-membership claims, edit, delete) but is
+  not pre-populated with any named person. Signup requires a verified
+  institutional email, so people can only create their own entry. Membership
+  of a lab is a claim, confirmed by a lab lead or moderator. Show name, role,
+  topics and links out only.
 - **Tier 3: richer lab info (ethics, recruitment).** Volunteered by labs
   through a form, or extracted from public institutional policy pages with the
-  source cited. Never speculate.
+  source cited. Never speculate. Give institutions a right of reply before
+  comparisons go live.
 
 This captures most of the value (discovery and a UK-wide picture) while keeping
-the personal-data footprint small and defensible.
+the personal-data footprint small and defensible. The supplied list is used
+only for the lab layer; if it contains named people or contact details, strip
+them at import (as `scripts/build-schools.ps1` does for the school contact
+email).
+
+Note: a public organisational list elsewhere (e.g. an OSF file of Northern
+Ireland voluntary and community organisations) is a comparison for the lab
+layer, not evidence that harvesting named people is fine. Do not cite it as
+precedent for the researcher layer.
 
 ---
 
@@ -259,16 +295,19 @@ beside them.
   "nation": "England | Scotland | Wales | Northern Ireland | Ireland",
   "region": "…", "latitude": 0, "longitude": 0, "locationSource": "ROR | postcode",
   "websiteUrl": "…", "topics": ["language", "infancy", "…"],
-  "memberIds": ["person-id"],           // only confirmed/approved people
+  "memberIds": ["researcher-id"],       // filled at runtime from confirmed claims
   "sourceUrl": "…", "lastVerified": "YYYY-MM-DD", "status": "harvested | confirmed"
 }
 
-// people (private store or separate controlled file, see 2.7)
+// researchers: self-registered, stored in the database behind login,
+// NOT committed to git (see 2.7)
 {
-  "id": "…", "name": "…", "role": "PI | postdoc | student | staff | unknown",
+  "id": "…", "name": "…", "role": "PI | postdoc | student | staff",
   "topics": ["…"], "profileUrl": "…", "orcid": "…",
-  "labIds": ["…"], "status": "proposed | confirmed | self-submitted",
-  "sourceUrl": "…", "lastVerified": "YYYY-MM-DD"
+  "institutionalEmailVerified": true,       // email itself is not displayed
+  "labClaims": [{ "labId": "…", "status": "pending | confirmed | rejected" }],
+  "status": "pending-email | active | lapsed",
+  "createdAt": "YYYY-MM-DD", "lastConfirmed": "YYYY-MM-DD"
 }
 
 // data/events.json
@@ -338,23 +377,35 @@ access is brokered, and who may consent for a child.
 ### 4.2 Hosting reality
 
 GitHub Pages is static: no login, no server-side storage. That is enough for
-Phase 1-2. Self-service lab editing, claim-your-entry and private person data
-(2.7) are the points at which a small backend (auth + database) becomes worth
-adding.
+Phases 1-2 (labs only). Researcher self-registration, edit/delete and lab
+membership confirmation need a small backend: authentication (verified
+institutional email, magic-link or university single sign-on) plus a database
+(e.g. Supabase or Cloudflare D1/Workers). The front end stays the same
+static pages and calls the backend for researcher data.
+
+Keeping the site private/members-only is optional once researchers
+self-register, but still reduces harassment and scraping risk. If gating:
+GitHub Pages access control for private sites needs GitHub Enterprise Cloud
+(check current docs), so use something like Cloudflare Access or university
+single sign-on rather than a shared password. Building locally needs no
+hosting decision yet.
 
 ---
 
 ## 5. Phases
 
 1. **Foundation.** New repo from this structure. Rebrand. Map page for labs
-   using the supplied list as seed (labs only, no named people). Geocode by
-   institution. Privacy/about page. Confirm the list's contents and contact
-   the DPO.
-2. **Automated lab discovery.** ROR + OpenAlex + public lab-page discovery
-   into a review queue, with provenance fields. Human approve before publish.
-   Add Ireland if wanted.
-3. **People layer.** Only after 2.6 steps 1-4 are done. Proposed-people
-   queue, lab-lead confirmation or claim flow, link-outs only.
+   using the supplied list as seed (labs only; strip any names/contacts at
+   import). Geocode by institution. Privacy/about page. Confirm the list's
+   contents and tell the DPO what is planned.
+2. **Automated lab discovery.** ROR + OpenAlex institution data + public
+   lab-page URLs into a review queue, with provenance fields. Human approve
+   before publish. Add Ireland if wanted. No staff names harvested.
+3. **Researcher self-registration.** Build the functionality (signup with
+   verified institutional email, profile, lab-membership claims, lab-lead
+   confirmation, edit/delete, annual reconfirmation, email route for people
+   who cannot log in). Build and test with dummy accounts. Open to real
+   people only after 2.6 steps 1-5.
 4. **Calendar.** Event JSON + ICS + submission and moderation flow.
 5. **Schema + comparison.** Ethics and recruitment forms/volunteered data,
    sourced public-policy extraction, compare page, right of reply.
@@ -369,7 +420,8 @@ adding.
 2. What exactly is in the circulated list (labs only, or names/emails too),
    and what was it shared for?
 3. Public or private repo? Is a small backend acceptable?
-4. Are researchers' names required at launch, or can launch be labs-only?
+4. Who confirms lab membership claims (lab leads, or network moderators)?
+   How are lab leads themselves identified?
 5. Include Ireland (ROI and NI are already covered under the UK) in v1 or
    later?
 6. Which child development areas should have their own calendars?
